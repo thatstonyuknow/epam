@@ -1,0 +1,33 @@
+---
+- name: Setting up apache web server on all agent nodes
+  hosts: all
+  tasks:
+  - name: Install apache packages
+    yum:
+      name: httpd
+      state: present
+  - name: Ensure that httpd is running
+    service:
+      name: httpd
+      state: started
+  - name: Template a file to /etc/files.conf
+    copy:
+      content: "<h1>Welcome to the internet</h1>"
+      dest: "/var/www/html/index.html"
+      backup: yes
+      owner: apache
+      group: apache
+      mode: 0644
+  - name: Open port 80 for http access
+    firewalld:
+      service: http
+      permanent: true
+      state: enabled
+  - name: Restart the firewalld service to load in the firewall changes
+    service:
+      name: firewalld
+      state: restarted
+  - name: Restart apache web server
+    service:
+      name: httpd
+      state: restarted
