@@ -1,0 +1,13 @@
+---
+- name: Setting up apache web server on all agent nodes
+  hosts: all
+  tasks:
+    - name: Check that the database file exists
+      stat:
+        path: /tmp/database
+      register: stat_result
+    - name: Install Maria DB if it doesnt exist
+      yum:
+        name: mariadb-server
+        state: present
+      when: stat_result.stat.exists

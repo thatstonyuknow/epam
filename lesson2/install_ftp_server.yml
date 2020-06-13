@@ -1,0 +1,50 @@
+---
+- name: Setting up FTP  server on all agent nodes
+  hosts: all
+  vars:
+    anonymous_enable: 'YES'
+    anon_upload_enable: 'YES'
+    anon_mkdir_write_enable: 'YES'
+    write_enable: 'YES'
+  tasks:
+  - name: Install vsftpde packages
+    yum:
+      name: vsftpd
+      state: present
+  - name: Ensure that ftp  is running
+    service:
+      name: vsftpd
+      state: started
+  - name: Template a file to /etc/files.conf
+    template:
+      src: ./vsftpd.j2
+      dest: /etc/vsftpd/vsftpd.conf
+  - name: Open port 21 for ftp  access
+    firewalld:
+      service: ftp
+      permanent: true
+      state: enabled
+  - name: Restart the firewalld service to load in the firewall changes
+    service:
+      name: firewalld
+      state: restarted
+  - name: Set required permissions  on  /var/ftp/pub diretory
+    file:
+      path: /var/ftp/pub
+      state: directory
+      owner: ftp
+      mode: '0755'
+  - name: Allow  to modify files in /var/ftp/pub
+    sefcontext:
+      target: '/var/ftp/pub'
+      setype: public_content_rw_t
+      state: present
+  - name: Set ftpd_anon_write  flag on and keep it persistent across reboots
+    seboolean:
+      name: ftpd_anon_write
+      state: yes
+      persistent: yes
+  - name: Restart ftp  web server
+    service:
+      name: vsftpd
+      state: restarted

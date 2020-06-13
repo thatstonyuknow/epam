@@ -1,0 +1,21 @@
+---
+- name: Remove apache web server on all agent nodes
+  hosts: all
+  tasks:
+  - name: Uninstall apache package
+    yum:
+      name: httpd
+      state: absent
+  - name: Remove file
+    file:
+      path: /var/www/html/index.html
+      state: absent
+  - name: close port 80 for http access
+    firewalld:
+      service: http
+      permanent: true
+      state: disabled
+  - name: Restart the firewalld service to load in the firewall changes
+    service:
+      name: firewalld
+      state: restarted
