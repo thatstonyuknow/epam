@@ -1,0 +1,12 @@
+<Directory  {{ custom_root_dir }}>
+    Require all granted
+</Directory>
+
+<VirtualHost *:{{ service_port }}>
+    DocumentRoot "{{ custom_root_dir }}"
+    ServerName {{ ansible_hostname }}
+    ServerAlias {{ server_alias }}
+    ServerAdmin root@example.com
+    ErrorLog "/var/log/httpd/error_log_example"
+    CustomLog "/var/log/httpd/access_log_example1" combined
+</VirtualHost>

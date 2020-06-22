@@ -1,0 +1,5 @@
+---
+- hosts: '*'
+  gather_facts: True
+  roles:
+    - apache

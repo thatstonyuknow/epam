@@ -1,0 +1,9 @@
+---
+# vars file for /home/ansible/ansible/roles/apache
+package_mame: httpd
+service_name: httpd
+service_port: 80
+service_user: apache
+service_group: apache
+server_alias: tanos
+custom_root_dir: /var/www/html
