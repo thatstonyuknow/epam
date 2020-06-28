@@ -1,0 +1,6 @@
+---
+web_root: /var/www/html
+ftp_root: /var/ftp
+remote_dir: /etc/ansible/facts.d
+facts_file: custom.fact
+firewall: firewalld
